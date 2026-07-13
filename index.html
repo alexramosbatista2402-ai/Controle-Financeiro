@@ -122,11 +122,10 @@
         .balance-main-row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 16px; gap: 10px; }
         .balance-value { color: var(--primary); font-size: 32px; font-weight: 800; }
         .balance-divider { border: 0; border-top: 1px solid var(--border); margin-bottom: 14px; }
-        .balance-footer-row { display: flex; justify-content: center; align-items: flex-start; width: 100%; gap: 10px; }
-        .footer-item { display: flex; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
-        .footer-icon-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: #E2F5E8; color: #3DAE6B; margin-top: 1px; }
-        .footer-icon-circle svg { width: 14px; height: 14px; }
-        .footer-sub-label { color: var(--text-muted); font-size: 11px; font-weight: 500; white-space: normal; line-height: 1.25; word-break: break-word; }
+        .balance-footer-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 20px; }
+        .footer-item { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .footer-icon-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: #E2F5E8; color: #3DAE6B; }
+        .footer-sub-label { color: var(--text-muted); font-size: 11.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .footer-sub-value { color: #1C1C1C; font-size: 14px; font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* --- MENU DE NAVEGAÇÃO --- */
@@ -143,27 +142,32 @@
 
         .integrated-content-area { flex: 1; width: 100%; }
 
-        /* --- LISTAGEM DE DESPESAS CORRIGIDA --- */
+        /* --- LISTAGEM DE DESPESAS PROTEGIDA CONTRA QUEBRAS --- */
         .expense-list { padding: 0 20px 24px; display: flex; flex-direction: column; gap: 12px; }
         .expense-row-wrapper { display: flex; align-items: center; gap: 12px; width: 100%; background: var(--surface); border-radius: 18px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.015); }
         .expense-card { display: flex; justify-content: space-between; align-items: center; flex: 1; min-width: 0; }
         .expense-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
         
+        .expense-icon-box { width: 40px; height: 40px; border-radius: 50%; background: #EDF5F1; color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .expense-icon-box svg { width: 18px; height: 18px; }
+        .expense-icon-box.pago { background: #EAEAEA; color: var(--text-muted); }
+        .expense-icon-box.vencida { background: var(--danger-bg); color: var(--danger); }
+        
         .expense-info-block { display: flex; flex-direction: column; min-width: 0; flex: 1; gap: 4px; }
         .expense-title { font-size: 15px; font-weight: 600; color: var(--text-dark); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3; }
-        .expense-date { font-size: 12px; color: var(--text-muted); display: block; }
+        .expense-subrow { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .expense-date { font-size: 12px; color: var(--text-muted); display: block; flex-shrink: 0; }
         
-        .expense-right { font-weight: 700; font-size: 14px; color: var(--text-dark); flex-shrink: 0; text-align: right; white-space: nowrap; margin-left: 10px; }
+        .expense-right { font-weight: 700; font-size: 14px; color: var(--text-dark); flex-shrink: 0; text-align: right; white-space: nowrap; }
         .expense-title.pago, .expense-right.pago { color: var(--text-muted) !important; text-decoration: line-through; }
         .expense-title.vencida, .expense-right.vencida { color: var(--danger) !important; }
 
-        .expense-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-left: 1px solid var(--border); padding-left: 10px; margin-left: 12px; }
-        .action-icon-btn { background: none; border: none; cursor: pointer; line-height: 1; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; }
+        .expense-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; border-left: 1px solid var(--border); padding-left: 12px; }
+        .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 18px; line-height: 1; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
         .action-icon-btn:active { transform: scale(0.85); }
-        .emoji-box { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; line-height: 1; overflow: hidden; }
-        .pago-box { width: 22px; height: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
-        .pago-box.off { background: #ffffff; border: 2px solid #BFE0CA; }
-        .pago-box.on { background: #56C583; color: #ffffff; font-size: 13px; font-weight: 700; }
+        .action-icon-btn.btn-pago { font-size: 20px; }
+        .action-icon-btn.btn-edit { font-size: 18px; }
+        .action-icon-btn.btn-delete { font-size: 18px; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; margin: 0 24px 15px; }
         .month-change-btn { background: white; border: 1px solid #E2EFE6; border-radius: 12px; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -433,7 +437,7 @@
         </div>
         <div class="input-group" id="edit-parc-group" style="display:none;"><label>Parcelas</label><input type="number" id="edit-parcelas" value="2"></div>
         <div id="edit-scope-area" style="display:none; border-top:1px solid var(--border); padding-top:10px; margin-top:10px;">
-            <label style="font-size:13px; font-weight:600; color:var(--text-secondary);">Abrangência da alteration:</label>
+            <label style="font-size:13px; font-weight:600; color:var(--text-secondary);">Abrangência da alteração:</label>
             <div class="radio-box-group">
                 <label class="radio-option"><input type="radio" name="edit-scope" value="all" checked> Alterar em todas as faturas</label>
                 <label class="radio-option"><input type="radio" name="edit-scope" value="month"> Alterar apenas neste mês</label>
@@ -709,25 +713,30 @@
             totalSaidasMesAtual += item.valor;
             if(!item.pago) totalRestante += item.valor;
             
-            let txtStatusClass = 'aberta';
-            if (item.pago) { txtStatusClass = 'pago'; } 
-            else if (item.vencida) { txtStatusClass = 'vencida'; }
+            let txtStatusClass = 'aberta'; let icC = '';
+            if (item.pago) { txtStatusClass = 'pago'; icC = 'pago'; } 
+            else if (item.vencida) { txtStatusClass = 'vencida'; icC = 'vencida'; }
+
+            let iconeKey = item.pago ? 'checkSquare' : (item.vencida ? 'alertTriangle' : obterIconeClasse(item.desc));
 
             html += `
                 <div class="expense-row-wrapper">
                     <div class="expense-card">
                         <div class="expense-left">
+                            <div class="expense-icon-box ${icC}">${svgIcon(iconeKey)}</div>
                             <div class="expense-info-block">
                                 <span class="expense-title ${txtStatusClass}">${item.desc}</span>
-                                <span class="expense-date">${String(item.dia).padStart(2,'0')}/${String(selMes).padStart(2,'0')}/2026</span>
+                                <div class="expense-subrow">
+                                    <span class="expense-date">${String(item.dia).padStart(2,'0')}/${String(selMes).padStart(2,'0')}/2026</span>
+                                    <span class="expense-right ${txtStatusClass}">${formatarMoeda(item.valor)}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="expense-right ${txtStatusClass}">${formatarMoeda(item.valor)}</div>
                     </div>
                     <div class="expense-actions">
-                        <button class="action-icon-btn btn-pago" onclick="togglePago('${item.key}')"><span class="pago-box ${item.pago ? 'on' : 'off'}">${item.pago ? '✓' : ''}</span></button>
-                        <button class="action-icon-btn btn-edit" onclick="openEditDespesa('${item.id}', '${item.key}', '${item.desc}', ${item.valor}, '${item.tipoOriginal}', '${item.data_vencimento_full}', ${item.parcelasTotal})"><span class="emoji-box">✏️</span></button>
-                        <button class="action-icon-btn btn-delete" onclick="askDeleteDespesa('${item.id}', '${item.key}', '${item.desc}', '${item.tipoOriginal}')"><span class="emoji-box">🗑️</span></button>
+                        <button class="action-icon-btn btn-pago" onclick="togglePago('${item.key}')">${item.pago ? '✅' : '⬜'}</button>
+                        <button class="action-icon-btn btn-edit" onclick="openEditDespesa('${item.id}', '${item.key}', '${item.desc}', ${item.valor}, '${item.tipoOriginal}', '${item.data_vencimento_full}', ${item.parcelasTotal})">✏️</button>
+                        <button class="action-icon-btn btn-delete" onclick="askDeleteDespesa('${item.id}', '${item.key}', '${item.desc}', '${item.tipoOriginal}')">🗑️</button>
                     </div>
                 </div>
             `;
@@ -826,8 +835,8 @@
                         <span style="font-size:13px; color:var(--primary); font-weight:700;">${formatarMoeda(e.valor)}</span>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button onclick="openEditEntrada(${i}, '${e.nome}', ${e.valor})" style="background:none; border:none; cursor:pointer; padding:0;"><span class="emoji-box">✏️</span></button>
-                        <button onclick="askDeleteEntrada(${i}, '${e.nome}')" style="background:none; border:none; cursor:pointer; padding:0;"><span class="emoji-box">🗑️</span></button>
+                        <button onclick="openEditEntrada(${i}, '${e.nome}', ${e.valor})" style="background:none; border:none; cursor:pointer; font-size:18px;">✏️</button>
+                        <button onclick="askDeleteEntrada(${i}, '${e.nome}')" style="background:none; border:none; cursor:pointer; font-size:18px;">🗑️</button>
                     </div>
                 </div>
             `;
@@ -1008,7 +1017,7 @@
         }
     }
 
-    // --- REGISTRO DO SERVICE WORKER ---
+    // --- REGISTRO DO SERVICE WORKER (CRUCIAL PARA OCULTAR URL) ---
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
