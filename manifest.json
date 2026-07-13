@@ -1,0 +1,18 @@
+{
+  "short_name": "Finanças",
+  "name": "Controle Financeiro",
+  "description": "Aplicativo simples de Controle Financeiro Pessoal",
+  "icons": [
+    {
+      "src": "icone.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#F4F7F6",
+  "theme_color": "#046A38",
+  "display": "standalone",
+  "orientation": "portrait"
+}
