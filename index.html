@@ -122,10 +122,11 @@
         .balance-main-row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 16px; gap: 10px; }
         .balance-value { color: var(--primary); font-size: 32px; font-weight: 800; }
         .balance-divider { border: 0; border-top: 1px solid var(--border); margin-bottom: 14px; }
-        .balance-footer-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 20px; }
-        .footer-item { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-        .footer-icon-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: #E2F5E8; color: #3DAE6B; }
-        .footer-sub-label { color: var(--text-muted); font-size: 11.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .balance-footer-row { display: flex; justify-content: center; align-items: flex-start; width: 100%; gap: 10px; }
+        .footer-item { display: flex; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
+        .footer-icon-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: #E2F5E8; color: #3DAE6B; margin-top: 1px; }
+        .footer-icon-circle svg { width: 14px; height: 14px; }
+        .footer-sub-label { color: var(--text-muted); font-size: 11px; font-weight: 500; white-space: normal; line-height: 1.25; word-break: break-word; }
         .footer-sub-value { color: #1C1C1C; font-size: 14px; font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* --- MENU DE NAVEGAÇÃO --- */
@@ -162,12 +163,13 @@
         .expense-title.pago, .expense-right.pago { color: var(--text-muted) !important; text-decoration: line-through; }
         .expense-title.vencida, .expense-right.vencida { color: var(--danger) !important; }
 
-        .expense-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; border-left: 1px solid var(--border); padding-left: 12px; }
-        .action-icon-btn { background: none; border: none; cursor: pointer; font-size: 18px; line-height: 1; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
+        .expense-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-left: 1px solid var(--border); padding-left: 10px; margin-left: 2px; }
+        .action-icon-btn { background: none; border: none; cursor: pointer; line-height: 1; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; }
         .action-icon-btn:active { transform: scale(0.85); }
-        .action-icon-btn.btn-pago { font-size: 20px; }
-        .action-icon-btn.btn-edit { font-size: 18px; }
-        .action-icon-btn.btn-delete { font-size: 18px; }
+        .emoji-box { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 15px; line-height: 1; overflow: hidden; }
+        .pago-box { width: 22px; height: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+        .pago-box.off { background: #ffffff; border: 2px solid #BFE0CA; }
+        .pago-box.on { background: #56C583; color: #ffffff; font-size: 13px; font-weight: 700; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; margin: 0 24px 15px; }
         .month-change-btn { background: white; border: 1px solid #E2EFE6; border-radius: 12px; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -734,9 +736,9 @@
                         </div>
                     </div>
                     <div class="expense-actions">
-                        <button class="action-icon-btn btn-pago" onclick="togglePago('${item.key}')">${item.pago ? '✅' : '⬜'}</button>
-                        <button class="action-icon-btn btn-edit" onclick="openEditDespesa('${item.id}', '${item.key}', '${item.desc}', ${item.valor}, '${item.tipoOriginal}', '${item.data_vencimento_full}', ${item.parcelasTotal})">✏️</button>
-                        <button class="action-icon-btn btn-delete" onclick="askDeleteDespesa('${item.id}', '${item.key}', '${item.desc}', '${item.tipoOriginal}')">🗑️</button>
+                        <button class="action-icon-btn btn-pago" onclick="togglePago('${item.key}')"><span class="pago-box ${item.pago ? 'on' : 'off'}">${item.pago ? '✓' : ''}</span></button>
+                        <button class="action-icon-btn btn-edit" onclick="openEditDespesa('${item.id}', '${item.key}', '${item.desc}', ${item.valor}, '${item.tipoOriginal}', '${item.data_vencimento_full}', ${item.parcelasTotal})"><span class="emoji-box">✏️</span></button>
+                        <button class="action-icon-btn btn-delete" onclick="askDeleteDespesa('${item.id}', '${item.key}', '${item.desc}', '${item.tipoOriginal}')"><span class="emoji-box">🗑️</span></button>
                     </div>
                 </div>
             `;
@@ -835,8 +837,8 @@
                         <span style="font-size:13px; color:var(--primary); font-weight:700;">${formatarMoeda(e.valor)}</span>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button onclick="openEditEntrada(${i}, '${e.nome}', ${e.valor})" style="background:none; border:none; cursor:pointer; font-size:18px;">✏️</button>
-                        <button onclick="askDeleteEntrada(${i}, '${e.nome}')" style="background:none; border:none; cursor:pointer; font-size:18px;">🗑️</button>
+                        <button onclick="openEditEntrada(${i}, '${e.nome}', ${e.valor})" style="background:none; border:none; cursor:pointer; padding:0;"><span class="emoji-box">✏️</span></button>
+                        <button onclick="askDeleteEntrada(${i}, '${e.nome}')" style="background:none; border:none; cursor:pointer; padding:0;"><span class="emoji-box">🗑️</span></button>
                     </div>
                 </div>
             `;
