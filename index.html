@@ -1014,12 +1014,25 @@
     }
 
     // --- REGISTRO DO SERVICE WORKER (CRUCIAL PARA OCULTAR URL) ---
+    // Primeiro remove qualquer worker/cache antigo para o celular parar de mostrar a versão velha
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registrado com sucesso!', reg))
-                .catch(err => console.error('Falha ao registrar o Service Worker:', err));
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                regs.forEach(reg => reg.unregister());
+            }).finally(() => {
+                if (window.caches) {
+                    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).finally(registrarSW);
+                } else {
+                    registrarSW();
+                }
+            });
         });
+    }
+
+    function registrarSW() {
+        navigator.serviceWorker.register('sw.js?v=' + Date.now())
+            .then(reg => console.log('Service Worker registrado com sucesso!', reg))
+            .catch(err => console.error('Falha ao registrar o Service Worker:', err));
     }
 </script>
 </body>
