@@ -122,20 +122,22 @@
         .balance-main-row { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 16px; gap: 10px; }
         .balance-value { color: var(--primary); font-size: 32px; font-weight: 800; }
         .balance-divider { border: 0; border-top: 1px solid var(--border); margin-bottom: 14px; }
-        .balance-footer-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 20px; }
+        .balance-footer-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px; }
         .footer-item { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
         .footer-icon-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: #E2F5E8; color: #3DAE6B; }
-        .footer-sub-label { color: var(--text-muted); font-size: 11.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .footer-sub-value { color: #1C1C1C; font-size: 14px; font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .footer-text-block { min-width: 0; flex: 1; }
+        .footer-sub-label { color: var(--text-muted); font-size: 11.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .footer-sub-value { color: #1C1C1C; font-size: 14px; font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
         /* --- MENU DE NAVEGAÇÃO --- */
-        .nav-bar-container { background: #DCEEE1; margin: 0 20px 20px; border-radius: 22px; padding: 14px 8px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 8px 20px rgba(4, 106, 56, 0.08); }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; width: 76px; gap: 6px; outline: none; }
+        .nav-bar-container { background: #DCEEE1; margin: 0 20px 20px; border-radius: 22px; padding: 14px 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 20px rgba(4, 106, 56, 0.08); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; flex: 1; min-width: 0; gap: 6px; outline: none; }
         .nav-btn i { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-dark); transition: transform 0.15s, background-color 0.15s; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .nav-btn.active { color: var(--primary); }
         .nav-btn.active i { color: var(--primary); }
         .nav-btn.active .nav-dot { width: 14px; height: 3px; border-radius: 2px; background: var(--primary); margin-top: 1px; }
         .nav-dot { width: 14px; height: 3px; border-radius: 2px; background: transparent; margin-top: 1px; }
+        .nav-btn { white-space: nowrap; }
         .nav-btn.add-money i { background: #56C583; color: #ffffff; }
         .nav-btn.add-expense i { background: #E95757; color: #ffffff; }
         .nav-btn:active i { transform: scale(0.9); }
@@ -325,14 +327,14 @@
                 <div class="balance-footer-row">
                     <div class="footer-item">
                         <div class="footer-icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></div>
-                        <div>
+                        <div class="footer-text-block">
                             <div class="footer-sub-label">Total em Despesas</div>
                             <div class="footer-sub-value" id="lbl-despesas-total">R$ 0,00</div>
                         </div>
                     </div>
                     <div class="footer-item">
                         <div class="footer-icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M21 12V8a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h16v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"/><circle cx="17" cy="12.5" r="1.3"/></svg></div>
-                        <div>
+                        <div class="footer-text-block">
                             <div class="footer-sub-label">Restante a Pagar</div>
                             <div class="footer-sub-value" id="lbl-restante">R$ 0,00</div>
                         </div>
