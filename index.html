@@ -12,7 +12,7 @@
     
     <link rel="manifest" href="manifest.json">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -704,7 +704,13 @@
             }
         });
 
-        listagem.sort((acc,b) => acc.dia - b.dia).forEach(item => {
+        // ORDENAÇÃO: 1º Não pagas no topo, 2º Por dia de vencimento
+        listagem.sort((a, b) => {
+            if (a.pago !== b.pago) {
+                return a.pago ? 1 : -1;
+            }
+            return a.dia - b.dia;
+        }).forEach(item => {
             totalSaidasMesAtual += item.valor;
             if(!item.pago) totalRestante += item.valor;
             
@@ -1013,8 +1019,6 @@
         }
     }
 
-    // --- REGISTRO DO SERVICE WORKER (CRUCIAL PARA OCULTAR URL) ---
-    // Primeiro remove qualquer worker/cache antigo para o celular parar de mostrar a versão velha
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.getRegistrations().then(regs => {
