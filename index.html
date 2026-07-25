@@ -12,13 +12,18 @@
     
     <link rel="manifest" href="manifest.json">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
+    <!-- Firebase (Autenticação + Banco de Dados na Nuvem) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --primary: #046A38;
@@ -285,15 +290,15 @@
             <div class="tab" onclick="switchLoginTab('register')">Criar Conta</div>
         </div>
         <div class="form-card" id="form-login-ctx">
-            <div class="input-group"><label>Usuário</label><input type="text" id="login-user"></div>
-            <div class="input-group"><label>Senha</label><input type="password" id="login-pass"></div>
-            <button class="btn" onclick="handleLogin()">Entrar</button>
+            <div class="input-group"><label>E-mail</label><input type="email" id="login-user" autocomplete="username"></div>
+            <div class="input-group"><label>Senha</label><input type="password" id="login-pass" autocomplete="current-password"></div>
+            <button class="btn" id="btn-login" onclick="handleLogin()">Entrar</button>
         </div>
         <div class="form-card" id="form-register-ctx" style="display:none;">
-            <div class="input-group"><label>Usuário</label><input type="text" id="reg-user"></div>
-            <div class="input-group"><label>Senha</label><input type="password" id="reg-pass"></div>
-            <div class="input-group"><label>Confirme a Senha</label><input type="password" id="reg-pass-conf"></div>
-            <button class="btn" onclick="handleRegister()">Criar Conta</button>
+            <div class="input-group"><label>E-mail</label><input type="email" id="reg-user" autocomplete="username"></div>
+            <div class="input-group"><label>Senha</label><input type="password" id="reg-pass" autocomplete="new-password"></div>
+            <div class="input-group"><label>Confirme a Senha</label><input type="password" id="reg-pass-conf" autocomplete="new-password"></div>
+            <button class="btn" id="btn-register" onclick="handleRegister()">Criar Conta</button>
         </div>
     </div>
 
@@ -510,7 +515,27 @@
 </div>
 
 <script>
-    let currentUser = null;
+    // =====================================================================
+    // CONFIGURAÇÃO DO FIREBASE
+    // Substitua os valores abaixo pelos dados do SEU projeto Firebase.
+    // Como obter: console.firebase.google.com -> criar projeto ->
+    // ⚙️ Configurações do projeto -> "Seus apps" -> Web -> copiar o objeto firebaseConfig.
+    // =====================================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyAY5tu71WVL4fL3QdfTI_JP8LiGQe08Wc0",
+        authDomain: "financas-512d1.firebaseapp.com",
+        projectId: "financas-512d1",
+        storageBucket: "financas-512d1.firebasestorage.app",
+        messagingSenderId: "90413198549",
+        appId: "1:90413198549:web:fc65253e68d6897cf0465c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null; // agora guarda o UID do Firebase Auth
+    let currentUserEmail = null;
     let currentData = { entradas: [], dividas: [], pagas: {}, excecoes: {} };
     let currentDate = new Date();
     let pieChartInstance = null;
@@ -597,40 +622,132 @@
         return "dollar";
     }
 
+    function setBotaoCarregando(id, carregando, textoOriginal) {
+        const btn = document.getElementById(id);
+        if(!btn) return;
+        btn.disabled = carregando;
+        btn.innerText = carregando ? 'Aguarde...' : textoOriginal;
+    }
+
     function handleRegister() {
-        const user = document.getElementById('reg-user').value.trim().toLowerCase();
+        const email = document.getElementById('reg-user').value.trim().toLowerCase();
         const pass = document.getElementById('reg-pass').value;
-        if(!user || pass.length < 4) return alert('Dados inválidos.');
-        let users = JSON.parse(localStorage.getItem('usuarios_financeiro') || '{}');
-        if(users[user]) return alert('Usuário já existe.');
-        users[user] = { senha: pass, nome_exibicao: user.toUpperCase() };
-        localStorage.setItem('usuarios_financeiro', JSON.stringify(users));
-        alert('Conta criada!'); switchLoginTab('login');
+        const passConf = document.getElementById('reg-pass-conf').value;
+        if(!email || pass.length < 6) return alert('Preencha um e-mail válido e uma senha com no mínimo 6 caracteres.');
+        if(pass !== passConf) return alert('As senhas não coincidem.');
+
+        setBotaoCarregando('btn-register', true, 'Criar Conta');
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then((cred) => {
+                const nomeExibicao = email.split('@')[0].toUpperCase();
+                return db.collection('usuarios').doc(cred.user.uid).set({
+                    email: email,
+                    nome_exibicao: nomeExibicao
+                }).then(() => db.collection('dados_financeiros').doc(cred.user.uid).set({
+                    entradas: [], dividas: [], pagas: {}, excecoes: {}
+                }));
+            })
+            .then(() => {
+                alert('Conta criada com sucesso!');
+                switchLoginTab('login');
+                document.getElementById('login-user').value = email;
+            })
+            .catch((err) => alert('Erro ao criar conta: ' + traduzErroFirebase(err)))
+            .finally(() => setBotaoCarregando('btn-register', false, 'Criar Conta'));
     }
 
     function handleLogin() {
-        const user = document.getElementById('login-user').value.trim().toLowerCase();
+        const email = document.getElementById('login-user').value.trim().toLowerCase();
         const pass = document.getElementById('login-pass').value;
-        let users = JSON.parse(localStorage.getItem('usuarios_financeiro') || '{}');
-        if(users[user] && users[user].senha === pass) {
-            currentUser = user;
-            document.getElementById('cfg-nome').value = users[user].nome_exibicao;
-            document.getElementById('lbl-user-nome').innerText = users[user].nome_exibicao;
-            currentData = JSON.parse(localStorage.getItem(`dados_financeiros_${user}`) || '{"entradas":[],"dividas":[],"pagas":{},"excecoes":{}}');
-            navigate('home');
-        } else { alert('Credenciais incorretas.'); }
+        if(!email || !pass) return alert('Preencha e-mail e senha.');
+
+        setBotaoCarregando('btn-login', true, 'Entrar');
+        auth.signInWithEmailAndPassword(email, pass)
+            .catch((err) => alert('Erro ao entrar: ' + traduzErroFirebase(err)))
+            .finally(() => setBotaoCarregando('btn-login', false, 'Entrar'));
+        // A navegação para a home acontece automaticamente em onAuthStateChanged, abaixo.
     }
 
-    function handleLogout() { currentUser = null; navigate('login'); }
+    function handleLogout() { auth.signOut(); }
+
     function saveConfig() {
-        let users = JSON.parse(localStorage.getItem('usuarios_financeiro') || '{}');
         const nome = document.getElementById('cfg-nome').value.trim();
-        if(nome) { users[currentUser].nome_exibicao = nome; document.getElementById('lbl-user-nome').innerText = nome; }
-        localStorage.setItem('usuarios_financeiro', JSON.stringify(users));
-        closeModal('modal-config'); loadDashboard();
+        const novaSenha = document.getElementById('cfg-senha').value;
+        const user = auth.currentUser;
+        if(!user) return;
+
+        let tarefas = [];
+        if(nome) {
+            document.getElementById('lbl-user-nome').innerText = nome;
+            tarefas.push(db.collection('usuarios').doc(user.uid).set({ nome_exibicao: nome }, { merge: true }));
+        }
+        if(novaSenha) {
+            if(novaSenha.length < 6) { alert('A nova senha deve ter no mínimo 6 caracteres.'); return; }
+            tarefas.push(user.updatePassword(novaSenha).catch((err) => {
+                alert('Não foi possível alterar a senha: ' + traduzErroFirebase(err) + ' Pode ser necessário sair e entrar novamente antes de trocar a senha.');
+            }));
+        }
+
+        Promise.all(tarefas).then(() => {
+            document.getElementById('cfg-senha').value = '';
+            closeModal('modal-config');
+            loadDashboard();
+        });
     }
 
-    function saveData() { localStorage.setItem(`dados_financeiros_${currentUser}`, JSON.stringify(currentData)); }
+    // Salva os dados do usuário no Firestore (nuvem), acessível de qualquer aparelho
+    function saveData() {
+        if(!currentUser) return;
+        db.collection('dados_financeiros').doc(currentUser).set(currentData)
+            .catch((err) => console.error('Erro ao salvar dados na nuvem:', err));
+    }
+
+    function traduzErroFirebase(err) {
+        const mapa = {
+            'auth/email-already-in-use': 'Este e-mail já está cadastrado.',
+            'auth/invalid-email': 'E-mail inválido.',
+            'auth/weak-password': 'Senha muito fraca (mínimo 6 caracteres).',
+            'auth/user-not-found': 'Usuário não encontrado.',
+            'auth/wrong-password': 'Senha incorreta.',
+            'auth/invalid-credential': 'E-mail ou senha incorretos.',
+            'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
+            'auth/requires-recent-login': 'Por segurança, saia e entre novamente antes de trocar a senha.'
+        };
+        return mapa[err.code] || err.message;
+    }
+
+    // Mantém o login entre sessões/dispositivos: sempre que o estado de
+    // autenticação mudar (login, logout, ou reabrir o app já logado),
+    // carrega os dados certos da nuvem.
+    auth.onAuthStateChanged((user) => {
+        if(user) {
+            currentUser = user.uid;
+            currentUserEmail = user.email;
+            Promise.all([
+                db.collection('usuarios').doc(user.uid).get(),
+                db.collection('dados_financeiros').doc(user.uid).get()
+            ]).then(([perfilSnap, dadosSnap]) => {
+                const perfil = perfilSnap.exists ? perfilSnap.data() : { nome_exibicao: user.email.split('@')[0].toUpperCase() };
+                currentData = dadosSnap.exists ? dadosSnap.data() : { entradas: [], dividas: [], pagas: {}, excecoes: {} };
+                if(!currentData.entradas) currentData.entradas = [];
+                if(!currentData.dividas) currentData.dividas = [];
+                if(!currentData.pagas) currentData.pagas = {};
+                if(!currentData.excecoes) currentData.excecoes = {};
+
+                document.getElementById('cfg-nome').value = perfil.nome_exibicao || '';
+                document.getElementById('lbl-user-nome').innerText = perfil.nome_exibicao || user.email;
+                navigate('home');
+            }).catch((err) => {
+                console.error('Erro ao carregar dados da nuvem:', err);
+                alert('Não foi possível carregar seus dados. Verifique sua conexão.');
+            });
+        } else {
+            currentUser = null;
+            currentUserEmail = null;
+            currentData = { entradas: [], dividas: [], pagas: {}, excecoes: {} };
+            navigate('login');
+        }
+    });
     function formatarMoeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
     function toggleOcultarValores() {
@@ -704,13 +821,7 @@
             }
         });
 
-        // ORDENAÇÃO: 1º Não pagas no topo, 2º Por dia de vencimento
-        listagem.sort((a, b) => {
-            if (a.pago !== b.pago) {
-                return a.pago ? 1 : -1;
-            }
-            return a.dia - b.dia;
-        }).forEach(item => {
+        listagem.sort((acc,b) => acc.dia - b.dia).forEach(item => {
             totalSaidasMesAtual += item.valor;
             if(!item.pago) totalRestante += item.valor;
             
@@ -1019,6 +1130,8 @@
         }
     }
 
+    // --- REGISTRO DO SERVICE WORKER (CRUCIAL PARA OCULTAR URL) ---
+    // Primeiro remove qualquer worker/cache antigo para o celular parar de mostrar a versão velha
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.getRegistrations().then(regs => {
