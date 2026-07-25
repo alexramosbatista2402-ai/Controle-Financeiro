@@ -312,7 +312,7 @@
                 </div>
                 <div class="header-icons">
                     <button class="header-icon-btn bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-                    <button class="header-icon-btn profile" onclick="openModal('modal-config')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+                    <button class="header-icon-btn profile" onclick="document.getElementById('cfg-senha').value=''; document.getElementById('cfg-senha-atual').value=''; openModal('modal-config')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
                 </div>
             </div>
 
@@ -503,13 +503,35 @@
 </div>
 
 <div class="custom-modal-overlay" id="modal-config">
-    <div class="custom-modal-card">
+    <div class="custom-modal-card" style="max-height:85vh; overflow-y:auto;">
         <div class="dialog-header"><i style="color:var(--text-muted)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></i> Configurações</div>
         <div class="input-group"><label>Nome de Exibição</label><input type="text" id="cfg-nome"></div>
-        <div class="input-group"><label>Nova Senha</label><input type="password" id="cfg-senha"></div>
+        <div class="input-group"><label>E-mail</label><input type="email" id="cfg-email" autocomplete="email"></div>
+        <div class="input-group"><label>Nova Senha</label><input type="password" id="cfg-senha" autocomplete="new-password" placeholder="Deixe em branco para não alterar"></div>
+        <div class="input-group">
+            <label>Senha Atual</label>
+            <input type="password" id="cfg-senha-atual" autocomplete="current-password" placeholder="Necessária para alterar e-mail ou senha">
+            <span style="font-size:12px; color:var(--text-muted); display:block; margin-top:6px;">Por segurança, informe sua senha atual apenas se for alterar o e-mail ou a senha.</span>
+        </div>
         <div class="dialog-footer">
-            <button class="btn" onclick="saveConfig()">Salvar</button>
+            <button class="btn" id="btn-salvar-config" onclick="saveConfig()">Salvar</button>
             <button class="btn btn-cancel" onclick="closeModal('modal-config')">Fechar</button>
+        </div>
+        <div style="border-top:1px solid var(--border); margin-top:22px; padding-top:18px;">
+            <label style="font-size:13px; font-weight:600; color:var(--danger); display:block; margin-bottom:8px;">Zona de Perigo</label>
+            <button class="btn" style="background:var(--danger-bg); color:var(--danger);" onclick="closeModal('modal-config'); openModal('modal-excluir-conta');">Excluir Minha Conta</button>
+        </div>
+    </div>
+</div>
+
+<div class="custom-modal-overlay" id="modal-excluir-conta">
+    <div class="custom-modal-card">
+        <div class="dialog-header" style="color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico-svg"><path d="M10.3 3.86 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.86a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg> Excluir Conta</div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">Esta ação é <strong>permanente</strong> e irá apagar todos os seus dados financeiros, entradas e dívidas cadastradas. Não é possível desfazer.</p>
+        <div class="input-group"><label>Confirme sua Senha</label><input type="password" id="excl-senha-atual" autocomplete="current-password"></div>
+        <div class="dialog-footer">
+            <button class="btn" id="btn-excluir-conta" style="background:var(--danger)" onclick="executeDeleteAccount()">Sim, Excluir Conta</button>
+            <button class="btn btn-cancel" onclick="document.getElementById('excl-senha-atual').value=''; closeModal('modal-excluir-conta')">Cancelar</button>
         </div>
     </div>
 </div>
@@ -670,29 +692,96 @@
 
     function handleLogout() { auth.signOut(); }
 
+    // Reautentica o usuário com a senha atual. Necessário pelo Firebase antes
+    // de operações sensíveis como trocar e-mail, trocar senha ou excluir a conta.
+    function reauthenticate(user, senhaAtual) {
+        const credencial = firebase.auth.EmailAuthProvider.credential(user.email, senhaAtual);
+        return user.reauthenticateWithCredential(credencial);
+    }
+
     function saveConfig() {
         const nome = document.getElementById('cfg-nome').value.trim();
+        const novoEmail = document.getElementById('cfg-email').value.trim().toLowerCase();
         const novaSenha = document.getElementById('cfg-senha').value;
+        const senhaAtual = document.getElementById('cfg-senha-atual').value;
         const user = auth.currentUser;
         if(!user) return;
 
-        let tarefas = [];
-        if(nome) {
-            document.getElementById('lbl-user-nome').innerText = nome;
-            tarefas.push(db.collection('usuarios').doc(user.uid).set({ nome_exibicao: nome }, { merge: true }));
+        const emailMudou = novoEmail && novoEmail !== user.email;
+        const senhaMudou = !!novaSenha;
+
+        if(senhaMudou && novaSenha.length < 6) {
+            alert('A nova senha deve ter no mínimo 6 caracteres.');
+            return;
         }
-        if(novaSenha) {
-            if(novaSenha.length < 6) { alert('A nova senha deve ter no mínimo 6 caracteres.'); return; }
-            tarefas.push(user.updatePassword(novaSenha).catch((err) => {
-                alert('Não foi possível alterar a senha: ' + traduzErroFirebase(err) + ' Pode ser necessário sair e entrar novamente antes de trocar a senha.');
-            }));
+        if((emailMudou || senhaMudou) && !senhaAtual) {
+            alert('Informe sua senha atual para alterar o e-mail ou a senha.');
+            return;
         }
 
-        Promise.all(tarefas).then(() => {
+        setBotaoCarregando('btn-salvar-config', true, 'Salvar');
+
+        let fluxo = Promise.resolve();
+        if(emailMudou || senhaMudou) {
+            fluxo = reauthenticate(user, senhaAtual);
+        }
+
+        fluxo.then(() => {
+            let tarefas = [];
+            if(nome) {
+                document.getElementById('lbl-user-nome').innerText = nome;
+                tarefas.push(db.collection('usuarios').doc(user.uid).set({ nome_exibicao: nome }, { merge: true }));
+            }
+            if(emailMudou) {
+                tarefas.push(user.updateEmail(novoEmail).then(() => {
+                    currentUserEmail = novoEmail;
+                    return db.collection('usuarios').doc(user.uid).set({ email: novoEmail }, { merge: true });
+                }));
+            }
+            if(senhaMudou) {
+                tarefas.push(user.updatePassword(novaSenha));
+            }
+            return Promise.all(tarefas);
+        }).then(() => {
             document.getElementById('cfg-senha').value = '';
+            document.getElementById('cfg-senha-atual').value = '';
             closeModal('modal-config');
             loadDashboard();
+        }).catch((err) => {
+            alert('Não foi possível salvar: ' + traduzErroFirebase(err));
+        }).finally(() => {
+            setBotaoCarregando('btn-salvar-config', false, 'Salvar');
         });
+    }
+
+    // Exclui permanentemente a conta do usuário: reautentica, apaga os
+    // documentos no Firestore e então apaga o usuário no Firebase Auth.
+    function executeDeleteAccount() {
+        const user = auth.currentUser;
+        if(!user) return;
+        const senhaAtual = document.getElementById('excl-senha-atual').value;
+        if(!senhaAtual) { alert('Informe sua senha atual para confirmar a exclusão.'); return; }
+
+        setBotaoCarregando('btn-excluir-conta', true, 'Sim, Excluir Conta');
+
+        reauthenticate(user, senhaAtual)
+            .then(() => Promise.all([
+                db.collection('usuarios').doc(user.uid).delete(),
+                db.collection('dados_financeiros').doc(user.uid).delete()
+            ]))
+            .then(() => user.delete())
+            .then(() => {
+                document.getElementById('excl-senha-atual').value = '';
+                closeModal('modal-excluir-conta');
+                alert('Sua conta foi excluída com sucesso.');
+                // onAuthStateChanged cuida de voltar para a tela de login.
+            })
+            .catch((err) => {
+                alert('Não foi possível excluir a conta: ' + traduzErroFirebase(err));
+            })
+            .finally(() => {
+                setBotaoCarregando('btn-excluir-conta', false, 'Sim, Excluir Conta');
+            });
     }
 
     // Salva os dados do usuário no Firestore (nuvem), acessível de qualquer aparelho
@@ -735,6 +824,7 @@
                 if(!currentData.excecoes) currentData.excecoes = {};
 
                 document.getElementById('cfg-nome').value = perfil.nome_exibicao || '';
+                document.getElementById('cfg-email').value = user.email || '';
                 document.getElementById('lbl-user-nome').innerText = perfil.nome_exibicao || user.email;
                 navigate('home');
             }).catch((err) => {
